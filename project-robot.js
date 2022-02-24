@@ -62,7 +62,7 @@ function runRobot(state, robot, memory){
     for (let turn = 0;; turn++) {
         if (state.parcels.length == 0){
             console.log(`Выполнено за ${turn} ходов`);
-            break;
+            return turn;
         }
         let action = robot(state, memory);
         state = state.move(action.direction);
@@ -138,4 +138,20 @@ function goalOrientedRobot({place, parcels}, route){
 }
 
 /* Graph oriented robot */
-runRobot(VillageState.random(), goalOrientedRobot, []);
+//runRobot(VillageState.random(), goalOrientedRobot, []);
+
+/* Compare robots */
+function compareRobots(RobotOne = {robot:new Function(), memory:[]}
+                     , RobotTwo = {robot:new Function(), memory:[]}){
+    let sumRobotOne = 0;
+    let sumRobotTwo = 0;
+    for (let i = 0; i < 100; i++) {
+        randomPlace = VillageState.random();
+        sumRobotOne += runRobot(randomPlace, RobotOne.robot, RobotOne.memory)
+        sumRobotTwo += runRobot(randomPlace, RobotTwo.robot, RobotTwo.memory)
+    }
+    console.log(`\nRobot 1 - ${sumRobotOne/100} \nRobot 2 - ${sumRobotTwo/100}`)
+}
+
+compareRobots({robot:routeRobot, memory:mailRoute}
+            , {robot:goalOrientedRobot, memory:[]})
